@@ -1,0 +1,72 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Регистрация</title>
+    <link rel="stylesheet" href="{% static 'pages/form.css' %}">
+</head>
+<body class="body">
+{% include 'includes/nav.html' %}
+<main class="main container">
+    <div class="main__header">
+        <h1 class="main__title">Регистрация</h1>
+    </div>
+    <div class="form-container">
+        <form class="form" method="post" action="{% url 'signup' %}">
+            {% csrf_token %}
+            {% if form.errors %}
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <div class="alert alert-danger">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        <strong>{{ error|escape }}</strong>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            <div class="form__group">
+                <label for="first_name" class="form__label">Имя</label>
+                <div class="form__field-group">
+                    <input type="text" name="first_name" id="first_name" class="form__input">
+                    <span class="form__error"></span>
+                </div>
+            </div>
+            <div class="form__group">
+                <label for="username" class="form__label">Имя пользователя</label>
+                <div class="form__field-group">
+                    <input type="text" name="username" id="username" class="form__input">
+                </div>
+            </div>
+            <div class="form__group">
+                <label for="email" class="form__label">Адрес электронной почты</label>
+                <div class="form__field-group">
+                    <input type="email" name="email" id="email" class="form__input">
+                    <span class="form__error"></span>
+                </div>
+            </div>
+            <div class="form__group">
+                <label for="password1" class="form__label">Пароль</label>
+                <div class="form__field-group">
+                    <input type="password" name="password1" id="password1" class="form__input">
+                    <span class="form__error"></span>
+                </div>
+            </div>
+            <div class="form__footer">
+                <button type="submit" class="button button_style_blue">Создать аккаунт</button>
+            </div>
+        </form>
+    </div>
+
+
+</main>
+{% include 'includes/footer.html' %}
+</body>
+</html>

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Список покупок{% endblock %}
+{% block header %}Список покупок{% endblock %}
+{% block css %}<link rel="stylesheet" href="{% static 'pages/shopList.css' %}">{% endblock %}
+{% block content %}
+    {% csrf_token %}
+    <div class="card-list card-list_column">
+        <ul class="shopping-list">
+            {% for recipe in recipe_list %}
+                {% include "includes/purchase_card.html" with recipe=recipe %}
+            {% endfor %}
+        </ul>
+        <a href="{% url 'get_purchases' %}"><button class="button button_style_blue">Скачать список</button></a>
+    </div>
+    <script src="{% static 'js/config/config.js' %}"></script>
+    <script src="{% static 'js/components/Header.js' %}"></script>
+    <script src="{% static 'js/components/ShopList.js' %}"></script>
+    <script src="{% static 'js/api/Api.js' %}"></script>
+    <script src="{% static 'shopList.js' %}"></script>
+{% endblock %}

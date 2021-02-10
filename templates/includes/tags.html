@@ -1,0 +1,27 @@
+{% load tag_filter %}
+<ul class="tags">
+    <li class="tags__item">
+        {% if request.GET.breakfast == "on" or request.GET.breakfast == None %}
+        <a id="breakfast" class="tags__checkbox tags__checkbox_style_orange tags__checkbox_active" href="{{ request.path }}?{% query_transform request breakfast='off' %}"></a>
+        {% else %}
+        <a id="breakfast" class="tags__checkbox tags__checkbox_style_orange" href="{{ request.path }}?{% query_transform request breakfast='on' %}"></a>
+        {% endif %}
+        <span class="tags__label">Завтрак</span>
+    </li>
+    <li class="tags__item">
+        {% if request.GET.lunch == "on" or request.GET.lunch == None %}
+        <a id="lunch" class="tags__checkbox tags__checkbox_style_green tags__checkbox_active" href="{{ request.path }}?{% query_transform request lunch='off' %}"></a>
+        {% else %}
+        <a id="lunch" class="tags__checkbox tags__checkbox_style_green" href="{{ request.path }}?{% query_transform request lunch='on' %}"></a>
+        {% endif %}
+        <span for="lunch" class="tags__label">Обед</span>
+    </li>
+    <li class="tags__item">
+        {% if request.GET.dinner == "on" or request.GET.dinner == None %}
+        <a id="dinner" class="tags__checkbox tags__checkbox_style_purple tags__checkbox_active" href="{{ request.path }}?{% query_transform request dinner='off' %}"></a>
+        {% else %}
+        <a id="dinner" class="tags__checkbox tags__checkbox_style_purple" href="{{ request.path }}?{% query_transform request dinner='on' %}"></a>
+        {% endif %}
+        <label for="dinner" class="tags__label">Ужин</label>
+    </li>
+</ul>

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Рецепты{% endblock %}
+{% block header %}{{ author.get_full_name }}{% endblock %}
+{% block css %}<link rel="stylesheet" href="{% static 'pages/index.css' %}">{% endblock %}
+{% block tags %}{% include "includes/tags.html" %}{% endblock %}
+{% block content %}
+    {% csrf_token %}
+    <!--        <p style="padding: 0 0 2em 0;"><a class="button button_style_light-blue" href="#">Подписаться на автора</a></p>-->
+        <div class="author-subscribe" data-author="{{ author.username }}">
+            <p style="padding: 0 0 2em 0;">
+                {% if following and author != user %}
+                <button class="button button_style_light-blue button_size_subscribe" name="subscribe">Отписаться от автора</button></p>
+                {% elif not following and author != user and user.is_authenticated %}
+                <button class="button button_style_light-blue button_size_subscribe" name="subscribe" data-out>Подписаться на автора</button></p>
+                {% endif %}
+        </div>
+        <div class="card-list" >
+            {% for recipe in page %}
+                {% include "includes/recipe_card.html" with recipe=recipe favorite_recipes=favorite_recipes %}
+            {% endfor %}
+        </div>
+    {% if page.has_other_pages %}
+        {% include "includes/paginator.html" with items=page paginator=paginator %}
+    {% endif %}
+    <script src="{% static 'js/components/MainCards.js' %}"></script>
+
+    <script src="{% static 'js/components/Purchases.js' %}"></script>
+    <script src="{% static 'js/components/Favorites.js' %}"></script>
+    <script src="{% static 'js/components/Subscribe.js' %}"></script>
+
+    <script src="{% static 'js/config/config.js' %}"></script>
+    <script src="{% static 'js/components/AuthorRecipe.js' %}"></script>
+    <script src="{% static 'js/components/Header.js' %}"></script>
+
+    <script src="{% static 'js/api/Api.js' %}"></script>
+    <script src="{% static 'authorRecipe.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Ошибка{% endblock %}
+{% block header %}Ошибка{% endblock %}
+{% block css %}<link rel="stylesheet" href="{% static 'pages/index.css' %}">{% endblock %}
+{% block content %}
+
+<main role="main" class="container">
+<div class="row">
+    <div class="col-md-12">
+        <h1>Ошибка!</h1>
+        <p class="lead">Вы не указали теги в рецепте</p>
+        <p class="lead"><a href="{% url 'new_recipe' %}">Вернуться к созданию рецепта</a></p>
+    </div>
+</div>
+</main>
+
+{% endblock %}
