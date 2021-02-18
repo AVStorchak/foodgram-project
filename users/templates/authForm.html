@@ -1,20 +1,10 @@
+{% extends "base.html" %}
 {% load static %}
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Войти на сайт</title>
-    <link rel="stylesheet" href="{% static 'pages/form.css' %}">
-</head>
-<body class="body">
+{% block title %}Войти на сайт{% endblock %}
+{% block header %}Войти на сайт{% endblock %}
+{% block css %}<link rel="stylesheet" href="{% static 'pages/form.css' %}">{% endblock %}
 {% include 'includes/nav.html' %}
-<main class="main container">
-    <div class="main__header">
-        <h1 class="main__title">Войти на сайт</h1>
-    </div>
+{% block content %}
     <div class="form-container">
         <form class="form" method="post" action="{% url 'login' %}">
             {% csrf_token %}
@@ -40,9 +30,4 @@
             </div>
         </form>
     </div>
-
-
-</main>
-{% include 'includes/footer.html' %}
-</body>
-</html>
+{% endblock %}

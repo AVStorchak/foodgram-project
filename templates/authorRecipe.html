@@ -6,7 +6,6 @@
 {% block tags %}{% include "includes/tags.html" %}{% endblock %}
 {% block content %}
     {% csrf_token %}
-    <!--        <p style="padding: 0 0 2em 0;"><a class="button button_style_light-blue" href="#">Подписаться на автора</a></p>-->
         <div class="author-subscribe" data-author="{{ author.username }}">
             <p style="padding: 0 0 2em 0;">
                 {% if following and author != user %}

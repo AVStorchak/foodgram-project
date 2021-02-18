@@ -3,8 +3,8 @@ const counterId = document.querySelector('#counter');
 const ingredientsContainer = document.querySelector('.form__field-group-ingredientes-container');
 const nameIngredient = document.querySelector('#nameIngredient');
 const formDropdownItems = document.querySelector('.form__dropdown-items');
-const cantidadVal = document.querySelector('#cantidadVal');
-const cantidad = document.querySelector('#cantidad')
+const quantityVal = document.querySelector('#quantityVal');
+const quantity = document.querySelector('#quantity')
 const addIng = document.querySelector('#addIng');
 
 const fileInput = document.querySelector('#id_file');
@@ -32,12 +32,12 @@ function Ingredients() {
         if (e.target.classList.contains('form__item-list')) {
             nameIngredient.value = e.target.textContent;
             formDropdownItems.style.display = ''
-            cantidadVal.textContent = e.target.getAttribute('data-val');
+            quantityVal.textContent = e.target.getAttribute('data-val');
         }
     };
     // Добавление элемента из инпута
     const addIngredient = (e) => {
-        if(nameIngredient.value && cantidad.value) {
+        if(nameIngredient.value && quantity.value) {
             const data = getValue();
             const elem = document.createElement('div');
             elem.classList.add('form__field-item-ingredient');
@@ -65,11 +65,11 @@ function Ingredients() {
     const getValue = (e) => {
         const data = {
             name: nameIngredient.value,
-            value: cantidad.value,
-            units: cantidadVal.textContent
+            value: quantity.value,
+            units: quantityVal.textContent
         };
         clearValue(nameIngredient);
-        clearValue(cantidad);
+        clearValue(quantity);
         return data;
     };
     // очистка инпута

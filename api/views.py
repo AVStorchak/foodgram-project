@@ -12,6 +12,8 @@ from .serializers import (FavoriteSerializer, IngredientSerializer,
 
 User = get_user_model()
 
+JSON_RESPONSES = {'success': JsonResponse({'success': 'true'}),
+                  'failure': JsonResponse({'success': 'false'})}
 
 class IngredientViewSet(viewsets.ModelViewSet):
     queryset = BasicIngredient.objects.all()
@@ -32,11 +34,11 @@ class UserFollowingViewSet(viewsets.ModelViewSet):
             subscription = Subscription.objects.filter(author=author, user=user)
             if len(subscription) == 0:
                 serializer.save(author=author, user=user)
-                response = JsonResponse({'success': 'true'})
+                response = JSON_RESPONSES['success']
             else:
-                response = JsonResponse({'success': 'false'})
+                response = JSON_RESPONSES['failure']
         else:
-            response = JsonResponse({'success': 'false'})
+            response = JSON_RESPONSES['failure']
         return response
 
     def destroy(self, request, *args, **kwargs):
@@ -44,7 +46,7 @@ class UserFollowingViewSet(viewsets.ModelViewSet):
         user = request.user
         instance = get_object_or_404(Subscription.objects, author=author, user=user)
         instance.delete()
-        response = JsonResponse({'success': 'true'})
+        response = JSON_RESPONSES['success']
         return response
 
 
@@ -59,9 +61,9 @@ class FavoriteViewSet(viewsets.ModelViewSet):
         favorite = Favorite.objects.filter(recipe=recipe, user=user)
         if len(favorite) == 0:
             serializer.save(recipe=recipe, user=user)
-            response = JsonResponse({'success': 'true'})
+            response = JSON_RESPONSES['success']
         else:
-            response = JsonResponse({'success': 'false'})
+            response = JSON_RESPONSES['failure']
 
         return response
 
@@ -70,7 +72,7 @@ class FavoriteViewSet(viewsets.ModelViewSet):
         user = request.user
         instance = get_object_or_404(Favorite.objects, recipe=recipe, user=user)
         instance.delete()
-        response = JsonResponse({'success': 'true'})
+        response = JSON_RESPONSES['success']
         return response
 
 
@@ -85,9 +87,9 @@ class PurchaseViewSet(viewsets.ModelViewSet):
         purchase = Purchase.objects.filter(recipe=recipe, user=user)
         if len(purchase) == 0:
             serializer.save(recipe=recipe, user=user)
-            response = JsonResponse({'success': 'true'})
+            response = JSON_RESPONSES['success']
         else:
-            response = JsonResponse({'success': 'false'})
+            response = JSON_RESPONSES['failure']
 
         return response
 
@@ -96,5 +98,5 @@ class PurchaseViewSet(viewsets.ModelViewSet):
         user = request.user
         instance = get_object_or_404(Purchase.objects, recipe=recipe, user=user)
         instance.delete()
-        response = JsonResponse({'success': 'true'})
+        response = JSON_RESPONSES['success']
         return response
