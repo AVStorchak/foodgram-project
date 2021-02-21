@@ -1,27 +1,14 @@
 {% load tag_filter %}
 <ul class="tags">
+    {% get_tags request as tags %}
+    {% for tag, params in tags.items %}
     <li class="tags__item">
-        {% if request.GET.breakfast == "on" or request.GET.breakfast == None %}
-        <a id="breakfast" class="tags__checkbox tags__checkbox_style_orange tags__checkbox_active" href="{{ request.path }}?{% query_transform request breakfast='off' %}"></a>
+        {% if params.status == "on" %}
+        <a id="{{ tag }}" class="tags__checkbox {{ params.style }} tags__checkbox_active" href="{{ request.path }}?{{ params.path }}"></a>
         {% else %}
-        <a id="breakfast" class="tags__checkbox tags__checkbox_style_orange" href="{{ request.path }}?{% query_transform request breakfast='on' %}"></a>
+        <a id="{{ tag }}" class="tags__checkbox {{ params.style }}" href="{{ request.path }}?{{ params.path }}"></a>
         {% endif %}
-        <span class="tags__label">Завтрак</span>
+        <span class="tags__label">{{ params.name }}</span>
     </li>
-    <li class="tags__item">
-        {% if request.GET.lunch == "on" or request.GET.lunch == None %}
-        <a id="lunch" class="tags__checkbox tags__checkbox_style_green tags__checkbox_active" href="{{ request.path }}?{% query_transform request lunch='off' %}"></a>
-        {% else %}
-        <a id="lunch" class="tags__checkbox tags__checkbox_style_green" href="{{ request.path }}?{% query_transform request lunch='on' %}"></a>
-        {% endif %}
-        <span for="lunch" class="tags__label">Обед</span>
-    </li>
-    <li class="tags__item">
-        {% if request.GET.dinner == "on" or request.GET.dinner == None %}
-        <a id="dinner" class="tags__checkbox tags__checkbox_style_purple tags__checkbox_active" href="{{ request.path }}?{% query_transform request dinner='off' %}"></a>
-        {% else %}
-        <a id="dinner" class="tags__checkbox tags__checkbox_style_purple" href="{{ request.path }}?{% query_transform request dinner='on' %}"></a>
-        {% endif %}
-        <label for="dinner" class="tags__label">Ужин</label>
-    </li>
+    {% endfor %}
 </ul>

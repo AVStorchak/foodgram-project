@@ -1,13 +1,15 @@
 {% load static %}
+{% load tag_filter %}
 <div class="card" data-id="{{ recipe.id }}">
-    <a href="#" class="link" target="_blank"><img src="{{ recipe.image.url }}" alt="Какой-то текст" class="card__image"></a>
+    <a href="{% url 'recipe' recipe.author.username recipe.id %}" class="link" target="_blank"><img src="{{ recipe.image.url }}" alt="Какой-то текст" class="card__image"></a>
     <div class="card__body">
         <a class="card__title link" href="{% url 'recipe' recipe.author.username recipe.id %}" target="_blank">{{ recipe.title }}</a>
         <ul class="card__items">
-            {% for tag in recipe.tags.all %}
-                {% if "lunch" == tag.name %} <li class="card__item"><span class="badge badge_style_green">Обед</span></li> {% endif %}
-                {% if "breakfast" == tag.name %} <li class="card__item"><span class="badge badge_style_orange">Завтрак</span></li> {% endif %}
-                {% if "dinner" == tag.name %} <li class="card__item"><span class="badge badge_style_purple">Ужин</span></li> {% endif %}
+            {% get_recipe_tags recipe.tags.all as tags %}
+            {% for tag, params in tags.items %}
+                {% if params.status == 'on' %}
+                <li class="card__item"><span class="badge {{ params.badge }}">{{ params.name }}</span></li>
+                {% endif %}
             {% endfor %}
         </ul>
         <div class="card__items card__items_column">

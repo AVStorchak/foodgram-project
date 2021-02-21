@@ -1,11 +1,13 @@
 {% load static %}
+{% load modulo %}
 <div class="card-user" data-author="{{ author.username }}">
     <div class="card-user__header">
         <h2 class="card-user__title">{{ author.get_full_name }}</h2>
     </div>
     <div class="card-user__body">
         <ul class="card-user__items">
-            {% for recipe in author.recipes.all|slice:":3" %}
+            {% with author.recipes.all as recipes %}
+            {% for recipe in recipes|slice:":3" %}
             <li class="card-user__item">
                 <div class="recipe">
                     <img src="{{ recipe.image.url }}" alt="какой-то-текст" class="recipe__image">
@@ -14,11 +16,19 @@
                 </div>
             </li>
             {% endfor %}
-            {% if author.recipes.all.count > 3 %}
+            {% if recipes.count > 3 %}
+            {% with recipes.count|add:"-3" as count%}
             <li class="card-user__item">
-                <a href="{% url 'profile' author.username %}" class="card-user__link link">Еще {{ author.recipes.all.count|add:"-3" }} рецептов...</a>
+                <a href="{% url 'profile' author.username %}" class="card-user__link link">Еще {{ count }} 
+                    {% if count > 4 and  21 > count  %} рецептов...
+                    {% elif count|modulo:10 == 1 %} рецепт...
+                    {% elif 1 < count|modulo:10 < 5 %} рецепта...
+                    {% endif %}
+                </a>
             </li>
+            {% endwith %}
             {% endif %}
+            {% endwith %}
         </ul>
     </div>
     <div class="card-user__footer">
