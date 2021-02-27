@@ -1,5 +1,6 @@
 {% load static %}
 {% load tag_filter %}
+{% load recipe_filter %}
 <div class="card" data-id="{{ recipe.id }}">
     <a href="{% url 'recipe' recipe.author.username recipe.id %}" class="link" target="_blank"><img src="{{ recipe.image.url }}" alt="Какой-то текст" class="card__image"></a>
     <div class="card__body">
@@ -18,15 +19,17 @@
         </div>
     </div>
     <div class="card__footer">
-        {% if user.is_authenticated and recipe.id in purchase_recipes %}
-        <button class="button button_style_light-blue-outline" name="purchases"><span class="icon-check button__icon"></span>Рецепт добавлен</button>
-        {% elif user.is_authenticated and recipe.id not in purchase_recipes %}
-        <button class="button button_style_light-blue" name="purchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
-        {% endif %}
-        {% if user.is_authenticated and recipe.id in favorite_recipes %}
-        <button class="button button_style_none" name="favorites"><span class="icon-favorite icon-favorite_active"></span></button>
-        {% elif user.is_authenticated and recipe.id not in favorite_recipes %}
-        <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
+        {% if user.is_authenticated %}
+            {% if recipe.id|exists:purchase_recipes %}
+            {% include 'includes/buttons/remove_from_purchases.html' %}
+            {% else %}
+            {% include 'includes/buttons/add_to_purchases.html' %}
+            {% endif %}
+            {% if recipe.id|exists:favorite_recipes %}
+            {% include 'includes/buttons/remove_from_favorites.html' %}
+            {% else %}
+            {% include 'includes/buttons/add_to_favorites.html' %}
+            {% endif %}
         {% endif %}
     </div>
 </div>

@@ -2,8 +2,7 @@
 {% load static %}
 {% block title %}Войти на сайт{% endblock %}
 {% block header %}Войти на сайт{% endblock %}
-{% block css %}<link rel="stylesheet" href="{% static 'pages/form.css' %}">{% endblock %}
-{% include 'includes/nav.html' %}
+{% block css %}{% static 'pages/form.css' %}{% endblock %}
 {% block content %}
     <div class="form-container">
         <form class="form" method="post" action="{% url 'login' %}">

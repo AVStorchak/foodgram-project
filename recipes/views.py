@@ -189,6 +189,8 @@ def favorite_list(request):
     tags = Tag.objects.get_request_tags(request)
     all_recipes = [i.recipe.id for i in
                    Favorite.objects.filter(user=user)]
+    purchase_recipes = [i.recipe.id for i in
+                        Purchase.objects.filter(user=request.user)]
     recipe_list = Recipe.objects.filter(
         id__in=all_recipes, tags__in=tags
     ).distinct()
@@ -202,6 +204,7 @@ def favorite_list(request):
             'page': page,
             'paginator': paginator,
             'favorite_recipes': all_recipes,
+            'purchase_recipes': purchase_recipes,
             }
         )
 

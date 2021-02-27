@@ -18,15 +18,19 @@ class SubscriptionSerializer(serializers.ModelSerializer):
         slug_field='username'
     )
 
-    def _user(self, obj):
-        request = self.context.get('request', None)
-        if request:
-            return request.user
-
     class Meta:
         model = Subscription
         fields = ('author', 'user')
         read_only_fields = ('user',)
+
+    def validate(self, data):
+        author = self.context['request'].data['author']
+        user = self.context['request'].user
+        subscription = Subscription.objects.filter(author__username=author, user=user)
+        if len(subscription) != 0 and author == user:
+            raise serializers.ValidationError('!!!')
+        else:
+            return data
 
 
 class FavoriteSerializer(serializers.ModelSerializer):
@@ -35,15 +39,19 @@ class FavoriteSerializer(serializers.ModelSerializer):
         slug_field='id'
     )
 
-    def _user(self, obj):
-        request = self.context.get('request', None)
-        if request:
-            return request.user
-
     class Meta:
         model = Favorite
         fields = ('recipe', 'user')
         read_only_fields = ('user',)
+
+    def validate(self, data):
+        recipe = self.context['request'].data['id']
+        user = self.context['request'].user
+        favorite = Favorite.objects.filter(recipe=recipe, user=user)
+        if len(favorite) != 0:
+            raise serializers.ValidationError('!!!')
+        else:
+            return data
 
 
 class PurchaseSerializer(serializers.ModelSerializer):
@@ -52,12 +60,16 @@ class PurchaseSerializer(serializers.ModelSerializer):
         slug_field='id'
     )
 
-    def _user(self, obj):
-        request = self.context.get('request', None)
-        if request:
-            return request.user
-
     class Meta:
         model = Purchase
         fields = ('recipe', 'user')
         read_only_fields = ('user',)
+
+    def validate(self, data):
+        recipe = self.context['request'].data['id']
+        user = self.context['request'].user
+        purchase = Purchase.objects.filter(recipe=recipe, user=user)
+        if len(purchase) != 0:
+            raise serializers.ValidationError('!!!')
+        else:
+            return data

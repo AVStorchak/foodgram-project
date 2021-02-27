@@ -29,20 +29,17 @@ class UserFollowingViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         author = get_object_or_404(User, username=self.request.data['author'])
-        user = serializer._user(obj=None)
-        if user != author:
-            subscription = Subscription.objects.filter(author=author, user=user)
-            if len(subscription) == 0:
-                serializer.save(author=author, user=user)
-                response = JSON_RESPONSES['success']
-            else:
-                response = JSON_RESPONSES['failure']
-        else:
+        user = serializer.context['request'].user
+        try:
+            serializer.save(author=author, user=user)
+            response = JSON_RESPONSES['success']
+        except ValidationError:
             response = JSON_RESPONSES['failure']
+
         return response
 
-    def destroy(self, request, *args, **kwargs):
-        author = get_object_or_404(User, username=self.kwargs['pk'])
+    def destroy(self, request, pk=None):
+        author = get_object_or_404(User, username=pk)
         user = request.user
         instance = get_object_or_404(Subscription.objects, author=author, user=user)
         instance.delete()
@@ -57,18 +54,17 @@ class FavoriteViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         recipe = get_object_or_404(Recipe, id=self.request.data['id'])
-        user = serializer._user(obj=None)
-        favorite = Favorite.objects.filter(recipe=recipe, user=user)
-        if len(favorite) == 0:
+        user = serializer.context['request'].user
+        try:
             serializer.save(recipe=recipe, user=user)
             response = JSON_RESPONSES['success']
-        else:
+        except ValidationError:
             response = JSON_RESPONSES['failure']
 
         return response
 
-    def destroy(self, request, *args, **kwargs):
-        recipe = get_object_or_404(Recipe, pk=self.kwargs['pk'])
+    def destroy(self, request, pk=None):
+        recipe = get_object_or_404(Recipe, pk=pk)
         user = request.user
         instance = get_object_or_404(Favorite.objects, recipe=recipe, user=user)
         instance.delete()
@@ -83,18 +79,17 @@ class PurchaseViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         recipe = get_object_or_404(Recipe, id=self.request.data['id'])
-        user = serializer._user(obj=None)
-        purchase = Purchase.objects.filter(recipe=recipe, user=user)
-        if len(purchase) == 0:
+        user = serializer.context['request'].user
+        try:
             serializer.save(recipe=recipe, user=user)
             response = JSON_RESPONSES['success']
-        else:
+        except ValidationError:
             response = JSON_RESPONSES['failure']
 
         return response
 
-    def destroy(self, request, *args, **kwargs):
-        recipe = get_object_or_404(Recipe, pk=self.kwargs['pk'])
+    def destroy(self, request, pk=None):
+        recipe = get_object_or_404(Recipe, pk=pk)
         user = request.user
         instance = get_object_or_404(Purchase.objects, recipe=recipe, user=user)
         instance.delete()
