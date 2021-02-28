@@ -1,5 +1,7 @@
 from django import template
 
+from recipes.models import Tag
+
 register = template.Library()
 
 
@@ -42,6 +44,8 @@ def get_tags(request):
     }
 
     for tag in TAGS.keys():
+        if not Tag.objects.filter(name=tag).exists():
+            Tag.objects.create(name=tag)
         if request.GET.get(tag) == 'off':
             TAGS[tag]['status'] = 'off'
             kw = {tag: 'on'}

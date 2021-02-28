@@ -10,10 +10,13 @@ from .permissions import IsOwnerOrSuperuserOrReadOnly
 from .serializers import (FavoriteSerializer, IngredientSerializer,
                           PurchaseSerializer, SubscriptionSerializer)
 
+
 User = get_user_model()
+
 
 JSON_RESPONSES = {'success': JsonResponse({'success': 'true'}),
                   'failure': JsonResponse({'success': 'false'})}
+
 
 class IngredientViewSet(viewsets.ModelViewSet):
     queryset = BasicIngredient.objects.all()

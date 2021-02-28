@@ -1,24 +1,24 @@
 from django.contrib.auth import get_user_model
+from django.core.validators import MinValueValidator
 from django.db import models
-from django.shortcuts import get_object_or_404
 
 
 User = get_user_model()
+TAGS = ('breakfast', 'lunch', 'dinner')
+
 
 class TagManager(models.Manager):
-    TAGS = ('breakfast', 'lunch', 'dinner')
-
     def get_request_tags(self, request):
         tag_set = []
-        for tag in self.TAGS:
+        for tag in TAGS:
             if request.GET.get(tag) == 'on' or request.GET.get(tag) is None:
-                obj, created = self.get_or_create(name=tag)
+                obj = self.get(name=tag)
                 tag_set.append(obj)
         return tag_set
 
     def get_recipe_tags(self, request):
         tag_set = []
-        for tag in self.TAGS:
+        for tag in TAGS:
             try:
                 request.POST[tag]
                 obj, created = self.get_or_create(name=tag)
@@ -55,7 +55,10 @@ class Recipe(models.Model):
     text = models.TextField()
     title = models.CharField(max_length=300)
     tags = models.ManyToManyField(Tag)
-    cooking_time = models.PositiveSmallIntegerField('Время приготовления')
+    cooking_time = models.PositiveSmallIntegerField(
+        'Время приготовления',
+        validators=[MinValueValidator(1),]
+    )
     pub_date = models.DateTimeField('Дата публикации', auto_now_add=True)
     ingredients = models.ManyToManyField(
         BasicIngredient,
@@ -65,32 +68,11 @@ class Recipe(models.Model):
                                related_name='recipes')
     image = models.ImageField(upload_to='recipes/', blank=True, null=True)
 
-    def apply_tags(self, tags):
-        for tag in tags:
-            self.tags.add(tag)
-
     def __str__(self):
         return self.text
 
     class Meta:
         ordering = ['-pub_date']
-
-
-class RecipeIngredientManager(models.Manager):
-    def handle_ingredients(self, request, recipe, ingredient_class):
-        self.filter(recipe=recipe).delete()
-        ingredient_names = {k: v for k, v in request.POST.items() if 'nameIngredient_' in k}
-        ingredient_values = {k: v for k, v in request.POST.items() if 'valueIngredient_' in k}
-        ingredient_number = 1
-        while ingredient_names:
-            try:
-                name = ingredient_names.pop('nameIngredient_' + str(ingredient_number))
-                quantity = ingredient_values.pop('valueIngredient_' + str(ingredient_number))
-                ingredient = get_object_or_404(ingredient_class, name=name)
-                self.create(quantity=quantity, ingredient=ingredient, recipe=recipe)
-                ingredient_number += 1
-            except KeyError:
-                ingredient_number += 1
 
 
 class RecipeIngredient(models.Model):
@@ -106,8 +88,9 @@ class RecipeIngredient(models.Model):
         related_name='recipes'
     )
 
-    objects = RecipeIngredientManager()
-
+    @classmethod
+    def create_ingredient(cls, quantity, ingredient, recipe):
+        cls.objects.create(quantity=quantity, ingredient=ingredient, recipe=recipe)
 
 class Subscription(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,

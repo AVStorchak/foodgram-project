@@ -20,12 +20,12 @@
     </div>
     <div class="card__footer">
         {% if user.is_authenticated %}
-            {% if recipe.id|exists:purchase_recipes %}
+            {% if recipe|exists:purchase_recipes %}
             {% include 'includes/buttons/remove_from_purchases.html' %}
             {% else %}
             {% include 'includes/buttons/add_to_purchases.html' %}
             {% endif %}
-            {% if recipe.id|exists:favorite_recipes %}
+            {% if recipe|exists:favorite_recipes %}
             {% include 'includes/buttons/remove_from_favorites.html' %}
             {% else %}
             {% include 'includes/buttons/add_to_favorites.html' %}
