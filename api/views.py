@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import filters, viewsets
@@ -44,10 +45,9 @@ class UserFollowingViewSet(viewsets.ModelViewSet):
     def destroy(self, request, pk=None):
         author = get_object_or_404(User, username=pk)
         user = request.user
-        instance = get_object_or_404(Subscription.objects, author=author, user=user)
+        instance = get_object_or_404(Subscription, author=author, user=user)
         instance.delete()
-        response = JSON_RESPONSES['success']
-        return response
+        return JSON_RESPONSES['success']
 
 
 class FavoriteViewSet(viewsets.ModelViewSet):
@@ -69,10 +69,9 @@ class FavoriteViewSet(viewsets.ModelViewSet):
     def destroy(self, request, pk=None):
         recipe = get_object_or_404(Recipe, pk=pk)
         user = request.user
-        instance = get_object_or_404(Favorite.objects, recipe=recipe, user=user)
+        instance = get_object_or_404(Favorite, recipe=recipe, user=user)
         instance.delete()
-        response = JSON_RESPONSES['success']
-        return response
+        return JSON_RESPONSES['success']
 
 
 class PurchaseViewSet(viewsets.ModelViewSet):
@@ -94,7 +93,6 @@ class PurchaseViewSet(viewsets.ModelViewSet):
     def destroy(self, request, pk=None):
         recipe = get_object_or_404(Recipe, pk=pk)
         user = request.user
-        instance = get_object_or_404(Purchase.objects, recipe=recipe, user=user)
+        instance = get_object_or_404(Purchase, recipe=recipe, user=user)
         instance.delete()
-        response = JSON_RESPONSES['success']
-        return response
+        return JSON_RESPONSES['success']

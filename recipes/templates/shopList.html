@@ -13,5 +13,11 @@
         </ul>
         <a href="{% url 'get_purchases' %}"><button class="button button_style_blue">Скачать список</button></a>
     </div>
+{% endblock %}
+{% block scripts %}
+    <script src="{% static 'js/config/config.js' %}"></script> 
+    <script src="{% static 'js/components/Header.js' %}"></script> 
+    <script src="{% static 'js/components/ShopList.js' %}"></script> 
+    <script src="{% static 'js/api/Api.js' %}"></script> 
     <script src="{% static 'shopList.js' %}"></script>
 {% endblock %}

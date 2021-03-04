@@ -10,7 +10,7 @@
             <p style="padding: 0 0 2em 0;">
                 {% if following and author != user %}
                 <button class="button button_style_light-blue button_size_subscribe" name="subscribe">Отписаться от автора</button></p>
-                {% elif not following and author != user and user.is_authenticated %}
+                {% elif user.is_authenticated and not following and author != user %}
                 <button class="button button_style_light-blue button_size_subscribe" name="subscribe" data-out>Подписаться на автора</button></p>
                 {% endif %}
         </div>
@@ -22,5 +22,18 @@
     {% if page.has_other_pages %}
         {% include "includes/paginator.html" with items=page paginator=paginator %}
     {% endif %}
-<script src="{% static 'authorRecipe.js' %}"></script>
+{% endblock %}
+{% block scripts %}
+    <script src="{% static 'js/components/MainCards.js' %}"></script> 
+    
+    <script src="{% static 'js/components/Purchases.js' %}"></script> 
+    <script src="{% static 'js/components/Favorites.js' %}"></script> 
+    <script src="{% static 'js/components/Subscribe.js' %}"></script> 
+
+    <script src="{% static 'js/config/config.js' %}"></script> 
+    <script src="{% static 'js/components/AuthorRecipe.js' %}"></script> 
+    <script src="{% static 'js/components/Header.js' %}"></script> 
+
+    <script src="{% static 'js/api/Api.js' %}"></script> 
+    <script src="{% static 'authorRecipe.js' %}"></script> 
 {% endblock %}

@@ -1,6 +1,6 @@
 from rest_framework import permissions
 
-MODERATOR_METHODS = ('DELETE',)
+MODERATOR_METHOD = 'DELETE'
 
 
 class IsOwnerOrSuperuserOrReadOnly(permissions.BasePermission):
@@ -12,9 +12,8 @@ class IsOwnerOrSuperuserOrReadOnly(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         return (
-            request.method in permissions.SAFE_METHODS or (
-                request.method in MODERATOR_METHODS and
+            request.method in permissions.SAFE_METHODS or 
+                request.method == MODERATOR_METHOD and
                 request.user.is_moderator or
                 obj.author == request.user
-            )
         )

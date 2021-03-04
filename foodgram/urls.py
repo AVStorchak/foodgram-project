@@ -15,7 +15,6 @@ Including another URLconf
 '''
 from django.conf.urls import handler404, handler500
 from django.contrib import admin
-from django.contrib.flatpages import views
 from django.urls import include, path
 
 urlpatterns = [
@@ -28,5 +27,5 @@ urlpatterns = [
 ]
 
 
-# handler404 = 'recipes.views.page_not_found'
-# handler500 = 'recipes.views.server_error
+handler404 = 'recipes.views.page_not_found'
+handler500 = 'recipes.views.server_error'
