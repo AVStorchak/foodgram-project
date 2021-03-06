@@ -7,12 +7,7 @@
 {% block content %}
     {% csrf_token %}
         <div class="author-subscribe" data-author="{{ author.username }}">
-            <p style="padding: 0 0 2em 0;">
-                {% if following and author != user %}
-                <button class="button button_style_light-blue button_size_subscribe" name="subscribe">Отписаться от автора</button></p>
-                {% elif user.is_authenticated and not following and author != user %}
-                <button class="button button_style_light-blue button_size_subscribe" name="subscribe" data-out>Подписаться на автора</button></p>
-                {% endif %}
+            {% include 'includes/buttons/subscribe_button_author.html' %}
         </div>
         <div class="card-list" >
             {% for recipe in page %}

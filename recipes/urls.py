@@ -8,17 +8,21 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('new/', views.new_recipe, name='new_recipe'),
     path('profile/<str:username>/', views.profile, name='profile'),
-    path('profile/<str:username>/<int:post_id>/', views.recipe_view, name='recipe'),
     path(
-        'profile/<str:username>/<int:post_id>/edit/',
+        'profile/<str:username>/<int:recipe_id>/',
+        views.recipe_view,
+        name='recipe'
+        ),
+    path(
+        'profile/<str:username>/<int:recipe_id>/edit/',
         views.recipe_edit,
         name='recipe_edit'
         ),
-    path('profile/<str:username>/<int:post_id>/delete/', views.recipe_delete, name='recipe_delete'),
-    path('subscriptions/', views.subscription_list, name='subscription_list'),
-    path('favorites/', views.favorite_list, name='favorite_list'),
-    path('shopping/', views.shop_list, name='shop_list'),
-    path('shopping/download/', views.get_purchases, name='get_purchases'),
+    path(
+        'profile/<str:username>/<int:recipe_id>/delete/',
+        views.recipe_delete,
+        name='recipe_delete'
+        ),
 ]
 
 if settings.DEBUG:

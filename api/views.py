@@ -4,9 +4,8 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import filters, viewsets
 
-from recipes.models import (BasicIngredient, Favorite, Purchase, Recipe,
-                            Subscription)
-
+from recipes.models import BasicIngredient, Recipe
+from subs.models import Favorite, Purchase, Subscription
 from .permissions import IsOwnerOrSuperuserOrReadOnly
 from .serializers import (FavoriteSerializer, IngredientSerializer,
                           PurchaseSerializer, SubscriptionSerializer)

@@ -13,11 +13,7 @@
             <div class="single-card__header-info">
                 <h1 class="single-card__title">{{ recipe.title }}</h1>
                 {% if user.is_authenticated %}
-                    {% if favorite_recipe %}
-                    {% include 'includes/buttons/remove_from_favorites_single.html' %}
-                    {% else %}
-                    {% include 'includes/buttons/add_to_favorites_single.html' %}
-                    {% endif %}
+                    {% include 'includes/buttons/favorite_button_single.html' %}
                 {% endif %}
             </div>
             <ul class="single-card__items">
@@ -39,16 +35,8 @@
             </div>
             <ul class="single-card__items">
                 {% if user.is_authenticated %}
-                    {% if purchase_recipe %}
-                    {% include 'includes/buttons/remove_from_purchases_single.html' %}
-                    {% elif user.is_authenticated and not purchase_recipe %}
-                    {% include 'includes/buttons/add_to_purchases_single.html' %}
-                    {% endif %}
-                    {% if following and author != user %}
-                    {% include 'includes/buttons/unsubscribe.html' %}
-                    {% elif not following and author != user %}
-                    {% include 'includes/buttons/subscribe.html' %}
-                    {% endif %}
+                    {% include 'includes/buttons/purchase_button_single.html' %}
+                    {% include 'includes/buttons/subscribe_button_single.html' %}
                 {% endif %}
             </ul>
             <div class="single-card__section">

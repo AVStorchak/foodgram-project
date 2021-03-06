@@ -18,18 +18,12 @@
                 <p class="form__label">Теги</p>
                 <div class="form__field-group">
                     <div class="tags">
+                        {% for tag, params in TAGS.items %}
                         <div class="tags__item">
-                            <input type="checkbox" name="breakfast" id="id_breakfast" class="tags__checkbox tags__checkbox_style_orange" {% if "breakfast" in tags %}checked{% endif %}>
-                            <label for="id_breakfast" class="tags__label">Завтрак</label>
+                            <input type="checkbox" name="{{ tag }}" id="id_{{ tag }}" class="tags__checkbox {{ params.style }}" {% if tag in tags %}checked{% endif %}>
+                            <label for="id_{{ tag }}" class="tags__label">{{ params.name }}</label>
                         </div>
-                        <div class="tags__item">
-                            <input type="checkbox" name="lunch" id="id_lunch" class="tags__checkbox tags__checkbox_style_green" {% if "lunch" in tags %}checked{% endif %}>
-                            <label for="id_lunch" class="tags__label">Обед</label>
-                        </div>
-                        <div class="tags__item">
-                            <input type="checkbox" name="dinner" id="id_dinner" class="tags__checkbox tags__checkbox_style_purple" {% if "dinner" in tags %}checked{% endif %}>
-                            <label for="id_dinner" class="tags__label">Ужин</label>
-                        </div>
+                        {% endfor %}
                     </div>
                     <span class="form__error"></span>
                 </div>

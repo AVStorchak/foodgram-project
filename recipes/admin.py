@@ -1,7 +1,7 @@
 from django.contrib import admin
 
-from .models import (BasicIngredient, Favorite, Purchase, Recipe,
-                     RecipeIngredient, Subscription, Tag)
+from .models import (BasicIngredient, Recipe,
+                     RecipeIngredient, Tag)
 
 
 class RecipeAdmin(admin.ModelAdmin):
@@ -26,25 +26,7 @@ class TagAdmin(admin.ModelAdmin):
     search_fields = ('name',)
 
 
-class SubscriptionAdmin(admin.ModelAdmin):
-    list_display = ('user', 'author')
-    search_fields = ('user', 'author')
-
-
-class FavoriteAdmin(admin.ModelAdmin):
-    list_display = ('user', 'recipe')
-    search_fields = ('user', 'recipe')
-
-
-class PurchaseAdmin(admin.ModelAdmin):
-    list_display = ('user', 'recipe')
-    search_fields = ('user', 'recipe')    
-
-
 admin.site.register(BasicIngredient, IngredientAdmin)
 admin.site.register(RecipeIngredient, RecipeIngredientAdmin)
 admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(Tag, TagAdmin)
-admin.site.register(Subscription, SubscriptionAdmin)
-admin.site.register(Favorite, FavoriteAdmin)
-admin.site.register(Purchase, PurchaseAdmin)

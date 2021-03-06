@@ -1,4 +1,6 @@
+import copy
 from django import template
+from django.conf import settings
 
 from recipes.models import Tag
 
@@ -6,76 +8,30 @@ register = template.Library()
 
 
 @register.simple_tag
-def query_transform(request, **kwargs):
+def query_transform(request, item, status):
     updated = request.GET.copy()
-    for k, v in kwargs.items():
-        if v is not None:
-            updated[k] = v
-        else:
-            updated.pop(k, 0)
-
+    updated[item] = status
     return updated.urlencode()
 
 
 @register.simple_tag
 def get_tags(request):
-    TAGS = {
-        'breakfast': {
-            'name': 'Завтрак',
-            'style': 'tags__checkbox_style_orange',
-            'badge': 'badge_style_orange',
-            'status': 'on',
-            'path': ''
-        },
-        'lunch': {
-            'name': 'Обед',
-            'style': 'tags__checkbox_style_green',
-            'badge': 'badge_style_green',
-            'status': 'on',
-            'path': ''
-        },
-        'dinner': {
-            'name': 'Ужин',
-            'style': 'tags__checkbox_style_purple',
-            'badge': 'badge_style_purple',
-            'status': 'on',
-            'path': ''
-        }
-    }
-
-    for tag in TAGS.keys():
+    tags = copy.deepcopy(settings.TAGS)
+    for tag in tags:
         if not Tag.objects.filter(name=tag).exists():
             Tag.objects.create(name=tag)
         if request.GET.get(tag) == 'off':
-            TAGS[tag]['status'] = 'off'
-            kw = {tag: 'on'}
-            TAGS[tag]['path'] = query_transform(request, **kw)
+            tags[tag]['status'] = 'off'
+            tags[tag]['path'] = query_transform(request, item=tag, status='on')
         else:
-            TAGS[tag]['status'] = 'on'
-            kw = {tag: 'off'}
-            TAGS[tag]['path'] = query_transform(request, **kw)
-    return TAGS
+            tags[tag]['status'] = 'on'
+            tags[tag]['path'] = query_transform(request, item=tag, status='off')
+    return tags
+
 
 @register.simple_tag
 def get_recipe_tags(recipe_tags):
-    TAGS = {
-        'breakfast': {
-            'name': 'Завтрак',
-            'badge': 'badge_style_orange',
-            'status': 'off',
-        },
-        'lunch': {
-            'name': 'Обед',
-            'badge': 'badge_style_green',
-            'status': 'off',
-        },
-        'dinner': {
-            'name': 'Ужин',
-            'badge': 'badge_style_purple',
-            'status': 'off',
-        }
-    }
-
+    tags = copy.deepcopy(settings.TAGS)
     for recipe_tag in recipe_tags:
-        TAGS[recipe_tag.name]['status'] = 'on'
-    return TAGS
+        tags[recipe_tag.name]['status'] = 'on'
+    return tags

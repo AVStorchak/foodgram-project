@@ -1,6 +1,5 @@
 {% load static %}
 {% load tag_filter %}
-{% load recipe_filter %}
 <div class="card" data-id="{{ recipe.id }}">
     <a href="{% url 'recipe' recipe.author.username recipe.id %}" class="link" target="_blank"><img src="{{ recipe.image.url }}" alt="Какой-то текст" class="card__image"></a>
     <div class="card__body">
@@ -20,16 +19,8 @@
     </div>
     <div class="card__footer">
         {% if user.is_authenticated %}
-            {% if recipe|exists:purchase_recipes %}
-            {% include 'includes/buttons/remove_from_purchases.html' %}
-            {% else %}
-            {% include 'includes/buttons/add_to_purchases.html' %}
-            {% endif %}
-            {% if recipe|exists:favorite_recipes %}
-            {% include 'includes/buttons/remove_from_favorites.html' %}
-            {% else %}
-            {% include 'includes/buttons/add_to_favorites.html' %}
-            {% endif %}
+            {% include 'includes/buttons/purchase_button.html' %}
+            {% include 'includes/buttons/favorite_button.html' %}
         {% endif %}
     </div>
 </div>
