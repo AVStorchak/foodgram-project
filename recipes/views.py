@@ -153,11 +153,15 @@ def recipe_view(request, username, recipe_id):
                                id=recipe_id, author__username=username)
     author = recipe.author
     ingredients = RecipeIngredient.objects.filter(recipe=recipe)
-    following = Subscription.objects.filter(author=author, user=user).exists()
-    user.is_favorite_recipe = Favorite.objects.filter(recipe=recipe,
+    if request.user.is_authenticated:
+        following = Subscription.objects.filter(author=author, 
+                                                user=user).exists()
+        user.is_favorite_recipe = Favorite.objects.filter(recipe=recipe,
                                                       user=user).exists()
-    user.is_purchase_recipe = Purchase.objects.filter(recipe=recipe,
+        user.is_purchase_recipe = Purchase.objects.filter(recipe=recipe,
                                                       user=user).exists()
+    else:
+        following = False
     return render(
         request,
         'singlePage.html', {
@@ -175,12 +179,18 @@ def profile(request, username):
     author = get_object_or_404(User, username=username)
     tags = get_request_tags(request)
     recipe_list = author.recipes.all().filter(tags__in=tags).distinct()
-    favorite_recipes = Recipe.objects.filter(favorites__user=request.user)
-    purchase_recipes = Recipe.objects.filter(purchases__user=request.user)
+    if request.user.is_authenticated:
+        favorite_recipes = Recipe.objects.filter(favorites__user=request.user)
+        purchase_recipes = Recipe.objects.filter(purchases__user=request.user)
+        following = Subscription.objects.filter(author=author,
+                                                user=user).exists()
+    else:
+        favorite_recipes, purchase_recipes = [], []
+        following = False
     paginator = Paginator(recipe_list, settings.PAGE_SIZE)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
-    following = Subscription.objects.filter(author=author, user=user).exists()
+    
     return render(
         request,
         'authorRecipe.html', {
