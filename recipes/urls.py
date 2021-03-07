@@ -23,6 +23,10 @@ urlpatterns = [
         views.recipe_delete,
         name='recipe_delete'
         ),
+    path('subscriptions/', views.subscription_list, name='subscription_list'),
+    path('favorites/', views.favorite_list, name='favorite_list'),
+    path('shopping/', views.shop_list, name='shop_list'),
+    path('shopping/download/', views.get_purchases, name='get_purchases'),
 ]
 
 if settings.DEBUG:

@@ -36,7 +36,6 @@ ALLOWED_HOSTS = [
 INSTALLED_APPS = [
     'api',
     'recipes',
-    'subs',
     'users',
     'about',
     'django.contrib.sites',
@@ -159,26 +158,3 @@ CACHES = {
 }
 
 PAGE_SIZE = 6
-TAGS = {
-        'breakfast': {
-            'name': 'Завтрак',
-            'style': 'tags__checkbox_style_orange',
-            'badge': 'badge_style_orange',
-            'status': '',
-            'path': ''
-        },
-        'lunch': {
-            'name': 'Обед',
-            'style': 'tags__checkbox_style_green',
-            'badge': 'badge_style_green',
-            'status': '',
-            'path': ''
-        },
-        'dinner': {
-            'name': 'Ужин',
-            'style': 'tags__checkbox_style_purple',
-            'badge': 'badge_style_purple',
-            'status': '',
-            'path': ''
-        }
-    }

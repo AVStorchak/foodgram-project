@@ -1,4 +1,4 @@
-{% if favorite_recipe %}
+{% if user.is_favorite_recipe %}
     <div class="single-card__favorite">
         <button class="button button_style_none" name="favorites"><span class="icon-favorite icon-favorite_big icon-favorite_active"></span></button>
         <div class="single-card__favorite-tooltip tooltip">Удалить из избранного</div>

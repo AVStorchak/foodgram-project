@@ -3,11 +3,7 @@
     {% get_tags request as tags %}
     {% for tag, params in tags.items %}
     <li class="tags__item">
-        {% if params.status == "on" %}
-        <a id="{{ tag }}" class="tags__checkbox {{ params.style }} tags__checkbox_active" href="{{ request.path }}?{{ params.path }}"></a>
-        {% else %}
-        <a id="{{ tag }}" class="tags__checkbox {{ params.style }}" href="{{ request.path }}?{{ params.path }}"></a>
-        {% endif %}
+        <a id="{{ tag }}" class="tags__checkbox {{ params.style }} {% if params.status == 'on' %}tags__checkbox_active{% endif %}" href="{{ request.path }}?{{ params.path }}"></a>
         <span class="tags__label">{{ params.name }}</span>
     </li>
     {% endfor %}

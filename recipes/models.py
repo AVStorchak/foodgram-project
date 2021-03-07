@@ -1,14 +1,17 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
+from django.http import Http404
 from django.shortcuts import get_object_or_404
-
 
 User = get_user_model()
 
 
 class Tag(models.Model):
     name = models.CharField(max_length=20, blank=False, unique=True)
+    display_name = models.CharField(max_length=20, blank=True, unique=True)
+    style = models.CharField(max_length=70, blank=True)
+    badge = models.CharField(max_length=70, blank=True)
 
     def __str__(self):
         return self.name
@@ -68,6 +71,22 @@ class RecipeIngredient(models.Model):
     @classmethod
     def create_ingredient(cls, quantity, ingredient_name, recipe):
         ingredient = get_object_or_404(BasicIngredient, name=ingredient_name)
+        if not isinstance(recipe, Recipe):
+            raise Http404
         cls.objects.create(quantity=quantity,
                            ingredient=ingredient,
                            recipe=recipe)
+
+
+class Favorite(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE,
+                             related_name='favorites')
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE,
+                               related_name='favorites')
+
+
+class Purchase(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE,
+                             related_name='purchases')
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE,
+                               related_name='purchases')
