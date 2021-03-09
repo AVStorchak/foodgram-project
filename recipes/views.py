@@ -190,7 +190,7 @@ def profile(request, username):
         purchase_recipes = Recipe.objects.filter(purchases__user=request.user)
         following = Subscription.objects.filter(
             author=author, user=user
-        ).exists()    
+        ).exists()
     paginator = Paginator(recipe_list, settings.PAGE_SIZE)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
