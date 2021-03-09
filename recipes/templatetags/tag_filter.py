@@ -2,7 +2,6 @@ import copy
 
 from django import template
 
-from recipes.context_processors import tag_processor
 from recipes.models import Tag
 
 register = template.Library()
@@ -17,7 +16,7 @@ def query_transform(request, item, status):
 
 @register.simple_tag
 def get_tags(request):
-    tag_list = tag_processor(request)['TAGS']
+    tag_list = Tag.get_params()
     tags = copy.deepcopy(tag_list)
     for tag in tags:
         if request.GET.get(tag) == 'off':
@@ -31,7 +30,7 @@ def get_tags(request):
 
 @register.simple_tag
 def get_recipe_tags(recipe_tags):
-    tag_list = tag_processor(recipe_tags)['TAGS']
+    tag_list = Tag.get_params()
     tags = copy.deepcopy(tag_list)
     for recipe_tag in recipe_tags:
         tags[recipe_tag.name]['status'] = 'on'

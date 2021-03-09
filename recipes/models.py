@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
-from django.http import Http404
 from django.shortcuts import get_object_or_404
 
 User = get_user_model()
@@ -12,6 +11,20 @@ class Tag(models.Model):
     display_name = models.CharField(max_length=20, blank=True, unique=True)
     style = models.CharField(max_length=70, blank=True)
     badge = models.CharField(max_length=70, blank=True)
+
+    @classmethod
+    def get_params(cls):
+        tag_params = {}
+        tag_list = cls.objects.all()
+        for tag in tag_list:
+            params = {}
+            params['name'] = tag.display_name
+            params['style'] = tag.style
+            params['badge'] = tag.badge
+            params['status'] = ''
+            params['path'] = ''
+            tag_params[tag.name] = params
+        return tag_params
 
     def __str__(self):
         return self.name
@@ -71,8 +84,7 @@ class RecipeIngredient(models.Model):
     @classmethod
     def create_ingredient(cls, quantity, ingredient_name, recipe):
         ingredient = get_object_or_404(BasicIngredient, name=ingredient_name)
-        if not isinstance(recipe, Recipe):
-            raise Http404
+        recipe = get_object_or_404(Recipe, id=recipe.id)
         cls.objects.create(quantity=quantity,
                            ingredient=ingredient,
                            recipe=recipe)

@@ -4,14 +4,13 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.decorators.cache import cache_page
 
 from api.models import Subscription
 
-from .context_processors import tag_processor
 from .forms import RecipeForm
 from .models import Favorite, Purchase, Recipe, RecipeIngredient, Tag
 
@@ -28,44 +27,43 @@ def handle_ingredients(request, recipe):
             ingredient_values[k[16:]] = v
         else:
             continue
+    if len(ingredient_names) != len(ingredient_values):
+        return HttpResponseBadRequest('The ingredient data is not valid!')
     for k, ingredient_name in ingredient_names.items():
         quantity = ingredient_values[k]
-        RecipeIngredient.create_ingredient(quantity=quantity,
-                                           ingredient_name=ingredient_name,
-                                           recipe=recipe)
+        RecipeIngredient.create_ingredient(
+            quantity=quantity,
+            ingredient_name=ingredient_name,
+            recipe=recipe
+        )
 
 
-def get_request_tags(request):
+def get_tags(request):
     tag_set = []
-    tag_list = tag_processor(request)['TAGS']
-    for tag in tag_list:
-        if request.GET.get(tag) == 'on' or request.GET.get(tag) is None:
-            obj = get_object_or_404(Tag, name=tag)
-            tag_set.append(obj)
-    return tag_set
-
-
-def get_recipe_tags(request):
-    tag_set = []
-    tag_list = tag_processor(request)['TAGS']
-    for tag in tag_list:
-        if tag in request.POST:
-            obj = get_object_or_404(Tag, name=tag)
-            tag_set.append(obj)
-        else:
-            continue
+    tag_list = Tag.get_params()
+    if request.method == 'POST':
+        for tag in tag_list:
+            if tag in request.POST:
+                obj = get_object_or_404(Tag, name=tag)
+                tag_set.append(obj)
+            else:
+                continue
+    else:
+        for tag in tag_list:
+            if request.GET.get(tag) == 'on' or request.GET.get(tag) is None:
+                obj = get_object_or_404(Tag, name=tag)
+                tag_set.append(obj)
     return tag_set
 
 
 @cache_page(1)
 def index(request):
-    tags = get_request_tags(request)
+    tags = get_tags(request)
     recipe_list = Recipe.objects.filter(tags__in=tags).distinct()
+    favorite_recipes, purchase_recipes = [], []
     if request.user.is_authenticated:
         favorite_recipes = Recipe.objects.filter(favorites__user=request.user)
         purchase_recipes = Recipe.objects.filter(purchases__user=request.user)
-    else:
-        favorite_recipes, purchase_recipes = [], []
     paginator = Paginator(recipe_list, settings.PAGE_SIZE)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
@@ -87,7 +85,7 @@ def new_recipe(request):
         recipe = form.save(commit=False)
         recipe.author = request.user
         recipe.save()
-        tags = get_recipe_tags(request)
+        tags = get_tags(request)
         if not tags:
             return render(request, "errors/no_tag_error.html")
         for tag in tags:
@@ -101,8 +99,9 @@ def new_recipe(request):
 
 @login_required
 def recipe_edit(request, username, recipe_id):
-    recipe = get_object_or_404(Recipe,
-                               id=recipe_id, author__username=username)
+    recipe = get_object_or_404(
+        Recipe, id=recipe_id, author__username=username
+    )
     ingredients = RecipeIngredient.objects.filter(recipe=recipe)
     tags = recipe.tags.all()
 
@@ -110,12 +109,13 @@ def recipe_edit(request, username, recipe_id):
         recipe_url = reverse('recipe', args=(recipe.author, recipe.id))
         return redirect(recipe_url)
 
-    form = RecipeForm(request.POST or None,
-                      files=request.FILES or None, instance=recipe)
+    form = RecipeForm(
+        request.POST or None, files=request.FILES or None, instance=recipe
+    )
     if form.is_valid():
         form.save()
         recipe.tags.clear()
-        tags = get_recipe_tags(request)
+        tags = get_tags(request)
         for tag in tags:
             recipe.tags.add(tag)
         handle_ingredients(request, recipe)
@@ -135,11 +135,12 @@ def recipe_edit(request, username, recipe_id):
 
 @login_required
 def recipe_delete(request, username, recipe_id):
-    recipe = get_object_or_404(Recipe,
-                               id=recipe_id, author__username=username)
-    recipe_url = reverse('recipe', args=(recipe.author, recipe.id))
+    recipe = get_object_or_404(
+        Recipe, id=recipe_id, author__username=username
+    )
 
     if recipe.author != request.user:
+        recipe_url = reverse('recipe', args=(recipe.author, recipe.id))
         return redirect(recipe_url)
 
     recipe.delete()
@@ -149,19 +150,22 @@ def recipe_delete(request, username, recipe_id):
 
 def recipe_view(request, username, recipe_id):
     user = request.user
-    recipe = get_object_or_404(Recipe.objects,
-                               id=recipe_id, author__username=username)
+    recipe = get_object_or_404(
+        Recipe.objects, id=recipe_id, author__username=username
+    )
     author = recipe.author
     ingredients = RecipeIngredient.objects.filter(recipe=recipe)
+    following = False
     if request.user.is_authenticated:
-        following = Subscription.objects.filter(author=author, 
-                                                user=user).exists()
-        user.is_favorite_recipe = Favorite.objects.filter(recipe=recipe,
-                                                      user=user).exists()
-        user.is_purchase_recipe = Purchase.objects.filter(recipe=recipe,
-                                                      user=user).exists()
-    else:
-        following = False
+        following = Subscription.objects.filter(
+            author=author, user=user
+        ).exists()
+        user.is_favorite_recipe = Favorite.objects.filter(
+            recipe=recipe, user=user
+        ).exists()
+        user.is_purchase_recipe = Purchase.objects.filter(
+            recipe=recipe, user=user
+        ).exists()
     return render(
         request,
         'singlePage.html', {
@@ -177,20 +181,20 @@ def recipe_view(request, username, recipe_id):
 def profile(request, username):
     user = request.user
     author = get_object_or_404(User, username=username)
-    tags = get_request_tags(request)
+    tags = get_tags(request)
     recipe_list = author.recipes.all().filter(tags__in=tags).distinct()
+    favorite_recipes, purchase_recipes = [], []
+    following = False
     if request.user.is_authenticated:
         favorite_recipes = Recipe.objects.filter(favorites__user=request.user)
         purchase_recipes = Recipe.objects.filter(purchases__user=request.user)
-        following = Subscription.objects.filter(author=author,
-                                                user=user).exists()
-    else:
-        favorite_recipes, purchase_recipes = [], []
-        following = False
+        following = Subscription.objects.filter(
+            author=author, user=user
+        ).exists()    
     paginator = Paginator(recipe_list, settings.PAGE_SIZE)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
-    
+
     return render(
         request,
         'authorRecipe.html', {
@@ -223,7 +227,7 @@ def subscription_list(request):
 @login_required
 def favorite_list(request):
     user = request.user
-    tags = get_request_tags(request)
+    tags = get_tags(request)
     all_recipes = Recipe.objects.filter(favorites__user=user)
     purchase_recipes = Recipe.objects.filter(purchases__user=user)
     recipe_list = Recipe.objects.filter(

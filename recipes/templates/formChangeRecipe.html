@@ -18,7 +18,7 @@
                 <p class="form__label">Теги</p>
                 <div class="form__field-group">
                     <div class="tags">
-                        {% for tag, params in TAGS.items %}
+                        {% for tag, params in tag_params.items %}
                         <div class="tags__item">
                             <input type="checkbox" name="{{ tag }}" id="id_{{ tag }}" class="tags__checkbox {{ params.style }}" {% if tag in tags %}checked{% endif %}>
                             <label for="id_{{ tag }}" class="tags__label">{{ params.name }}</label>

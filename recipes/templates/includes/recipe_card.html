@@ -19,8 +19,8 @@
     </div>
     <div class="card__footer">
         {% if user.is_authenticated %}
-            {% include 'includes/buttons/purchase_button.html' %}
-            {% include 'includes/buttons/favorite_button.html' %}
+            {% include 'includes/buttons/purchase_button.html' with type='generic' %}
+            {% include 'includes/buttons/favorite_button.html' with type='generic' %}
         {% endif %}
     </div>
 </div>
