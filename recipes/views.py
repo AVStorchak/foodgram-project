@@ -41,18 +41,12 @@ def handle_ingredients(request, recipe):
 def get_tags(request):
     tag_set = []
     tag_list = Tag.get_params()
-    if request.method == 'POST':
-        for tag in tag_list:
-            if tag in request.POST:
-                obj = get_object_or_404(Tag, name=tag)
-                tag_set.append(obj)
-            else:
-                continue
-    else:
-        for tag in tag_list:
-            if request.GET.get(tag) == 'on' or request.GET.get(tag) is None:
-                obj = get_object_or_404(Tag, name=tag)
-                tag_set.append(obj)
+    for tag in tag_list:
+        if ((request.method == 'POST' and tag in request.POST) or
+                (request.method == 'GET' and (request.GET.get(tag) == 'on' or
+                request.GET.get(tag) is None))):
+            obj = Tag.objects.get(name=tag)
+            tag_set.append(obj)
     return tag_set
 
 

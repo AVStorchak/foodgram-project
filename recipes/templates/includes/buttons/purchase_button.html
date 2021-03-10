@@ -1,14 +1,6 @@
 {% load recipe_filter %}
-{% if type == 'generic' %}
-    {% if recipe|exists:purchase_recipes %}
-        <button class="button button_style_light-blue-outline" name="purchases"><span class="icon-check button__icon"></span>Рецепт добавлен</button>
-    {% else %}
-        <button class="button button_style_light-blue" name="purchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
-    {% endif %}
-{% elif type == 'single_page' %}
-    {% if user.is_purchase_recipe %}
-        <li class="single-card__item"><button class="button button_style_blue" name="purchases"><span class="icon-check"></span> Рецепт добавлен</button></li>
-    {% else %}
-        <li class="single-card__item"><button class="button button_style_blue" name="purchases" data-out><span class="icon-plus"></span> Добавить в покупки</button></li>
-    {% endif %}
+{% if user.is_purchase_recipe or recipe|exists:purchase_recipes %}
+    <button class="button {% if type == 'generic' %}button_style_light-blue-outline{% elif type == 'single_page' %}button_style_blue{% endif %}" name="purchases"><span class="icon-check {% if type == 'single_page' %}button__icon{% endif %}"></span>Рецепт добавлен</button>
+{% else %}
+    <button class="button {% if type == 'generic' %}button_style_light-blue{% elif type == 'single_page' %}button button_style_blue{% endif %}" name="purchases" data-out><span class="icon-plus {% if type == 'single_page' %}button__icon{% endif %}"></span>Добавить в покупки</button>
 {% endif %}

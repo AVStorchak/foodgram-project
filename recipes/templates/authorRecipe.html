@@ -7,7 +7,9 @@
 {% block content %}
     {% csrf_token %}
         <div class="author-subscribe" data-author="{{ author.username }}">
-            {% include 'includes/buttons/subscribe_button.html' with type='author' %}
+            <p style="padding: 0 0 2em 0;">
+                {% include 'includes/buttons/subscribe_button.html' %}
+            </p>
         </div>
         <div class="card-list" >
             {% for recipe in page %}

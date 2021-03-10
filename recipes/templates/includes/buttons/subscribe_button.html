@@ -1,18 +1,9 @@
-{% if type == 'author' %}
-    <p style="padding: 0 0 2em 0;">
+{% if type == 'subscriptions' %}
+    <button class="button button_style_light-blue button_size_auto" name="subscribe">Отписаться</button>
+{% else %}
     {% if following and author != user %}
-        <button class="button button_style_light-blue button_size_subscribe" name="subscribe">Отписаться от автора</button></p>
+        <button class="button button_style_light-blue button_size_subscribe" name="subscribe">Отписаться от автора</button>
     {% elif user.is_authenticated and not following and author != user %}
-        <button class="button button_style_light-blue button_size_subscribe" name="subscribe" data-out>Подписаться на автора</button></p>
+        <button class="button button_style_light-blue button_size_subscribe" name="subscribe" data-out>Подписаться на автора</button>
     {% endif %}
-{% elif type == 'single_page' %}
-    {% if following and author != user %}
-        <li class="single-card__item"><button class="button button_style_light-blue button_size_subscribe" name="subscribe">Отписаться от автора</button></li>
-    {% elif user.is_authenticated and not following and author != user %}
-        <li class="single-card__item"><button class="button button_style_light-blue button_size_subscribe" name="subscribe" data-out>Подписаться на автора</button></li>
-    {% endif %}
-{% elif type == 'subscriptions' %}
-    <div class="card-user__footer">
-        <button class="button button_style_light-blue button_size_auto" name="subscribe">Отписаться</button>
-    </div>
 {% endif %}

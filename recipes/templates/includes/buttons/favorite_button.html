@@ -1,20 +1,12 @@
 {% load recipe_filter %}
-{% if type == 'generic' %}
-    {% if recipe|exists:favorite_recipes %}
-        <button class="button button_style_none" name="favorites"><span class="icon-favorite icon-favorite_active"></span></button>
-    {% else %}
-        <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
+{% if user.is_favorite_recipe or recipe|exists:favorite_recipes %}
+    <button class="button button_style_none" name="favorites"><span class="icon-favorite {% if type == 'single_page' %}icon-favorite_big{% endif %} icon-favorite_active"></span></button>
+    {% if type == 'single_page' %}
+        <div class="single-card__favorite-tooltip tooltip">Удалить из избранного</div>
     {% endif %}
-{% elif type == 'single_page' %}
-    {% if user.is_favorite_recipe %}
-        <div class="single-card__favorite">
-            <button class="button button_style_none" name="favorites"><span class="icon-favorite icon-favorite_big icon-favorite_active"></span></button>
-            <div class="single-card__favorite-tooltip tooltip">Удалить из избранного</div>
-        </div>
-    {% else %}
-        <div class="single-card__favorite">
-            <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite icon-favorite_big"></span></button>
-            <div class="single-card__favorite-tooltip tooltip">Добавить в избранное</div>
-        </div>
+{% else %}
+    <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite {% if type == 'single_page' %}icon-favorite_big{% endif %}"></span></button>
+    {% if type == 'single_page' %}
+        <div class="single-card__favorite-tooltip tooltip">Добавить в избранное</div>
     {% endif %}
 {% endif %}

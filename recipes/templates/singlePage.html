@@ -13,7 +13,9 @@
             <div class="single-card__header-info">
                 <h1 class="single-card__title">{{ recipe.title }}</h1>
                 {% if user.is_authenticated %}
-                    {% include 'includes/buttons/favorite_button.html' with type='single_page' %}
+                    <div class="single-card__favorite">
+                        {% include 'includes/buttons/favorite_button.html' with type='single_page' %}
+                    </div>
                 {% endif %}
             </div>
             <ul class="single-card__items">
@@ -35,8 +37,12 @@
             </div>
             <ul class="single-card__items">
                 {% if user.is_authenticated %}
-                    {% include 'includes/buttons/purchase_button.html' with type='single_page' %}
-                    {% include 'includes/buttons/subscribe_button.html' with type='single_page' %}
+                    <li class="single-card__item">
+                        {% include 'includes/buttons/purchase_button.html' with type='single_page' %}
+                    </li>
+                    <li class="single-card__item">
+                        {% include 'includes/buttons/subscribe_button.html' %}
+                    </li>
                 {% endif %}
             </ul>
             <div class="single-card__section">
