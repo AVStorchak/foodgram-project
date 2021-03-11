@@ -18,6 +18,7 @@ class Tag(models.Model):
         tag_list = cls.objects.all()
         for tag in tag_list:
             params = {}
+            params['instance'] = tag
             params['name'] = tag.display_name
             params['style'] = tag.style
             params['badge'] = tag.badge

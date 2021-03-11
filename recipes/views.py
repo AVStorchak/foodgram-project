@@ -38,21 +38,27 @@ def handle_ingredients(request, recipe):
         )
 
 
-def get_tags(request):
+def get_request_tags(request):
     tag_set = []
     tag_list = Tag.get_params()
-    for tag in tag_list:
-        if ((request.method == 'POST' and tag in request.POST) or
-                (request.method == 'GET' and (request.GET.get(tag) == 'on' or
-                request.GET.get(tag) is None))):
-            obj = Tag.objects.get(name=tag)
-            tag_set.append(obj)
+    for tag, params in tag_list.items():
+        if request.GET.get(tag) == 'on' or request.GET.get(tag) is None:
+            tag_set.append(params['instance'])
+    return tag_set
+
+
+def get_recipe_tags(request):
+    tag_set = []
+    tag_list = Tag.get_params()
+    for tag, params in tag_list.items():
+        if tag in request.POST:
+            tag_set.append(params['instance'])
     return tag_set
 
 
 @cache_page(1)
 def index(request):
-    tags = get_tags(request)
+    tags = get_request_tags(request)
     recipe_list = Recipe.objects.filter(tags__in=tags).distinct()
     favorite_recipes, purchase_recipes = [], []
     if request.user.is_authenticated:
@@ -68,8 +74,8 @@ def index(request):
             'paginator': paginator,
             'favorite_recipes': favorite_recipes,
             'purchase_recipes': purchase_recipes,
-            }
-        )
+        }
+    )
 
 
 @login_required
@@ -79,7 +85,7 @@ def new_recipe(request):
         recipe = form.save(commit=False)
         recipe.author = request.user
         recipe.save()
-        tags = get_tags(request)
+        tags = get_recipe_tags(request)
         if not tags:
             return render(request, "errors/no_tag_error.html")
         for tag in tags:
@@ -109,7 +115,7 @@ def recipe_edit(request, username, recipe_id):
     if form.is_valid():
         form.save()
         recipe.tags.clear()
-        tags = get_tags(request)
+        tags = get_recipe_tags(request)
         for tag in tags:
             recipe.tags.add(tag)
         handle_ingredients(request, recipe)
@@ -123,8 +129,8 @@ def recipe_edit(request, username, recipe_id):
             'recipe': recipe,
             'ingredients': ingredients,
             'tags': tags
-            }
-        )
+        }
+    )
 
 
 @login_required
@@ -168,14 +174,14 @@ def recipe_view(request, username, recipe_id):
             'recipe': recipe,
             'ingredients': ingredients,
             'following': following,
-            }
-        )
+        }
+    )
 
 
 def profile(request, username):
     user = request.user
     author = get_object_or_404(User, username=username)
-    tags = get_tags(request)
+    tags = get_request_tags(request)
     recipe_list = author.recipes.all().filter(tags__in=tags).distinct()
     favorite_recipes, purchase_recipes = [], []
     following = False
@@ -199,8 +205,8 @@ def profile(request, username):
             'following': following,
             'favorite_recipes': favorite_recipes,
             'purchase_recipes': purchase_recipes,
-            }
-        )
+        }
+    )
 
 
 @login_required
@@ -214,14 +220,14 @@ def subscription_list(request):
         'myFollow.html', {
             'page': page,
             'paginator': paginator,
-            }
-        )
+        }
+    )
 
 
 @login_required
 def favorite_list(request):
     user = request.user
-    tags = get_tags(request)
+    tags = get_request_tags(request)
     all_recipes = Recipe.objects.filter(favorites__user=user)
     purchase_recipes = Recipe.objects.filter(purchases__user=user)
     recipe_list = Recipe.objects.filter(
@@ -238,8 +244,8 @@ def favorite_list(request):
             'paginator': paginator,
             'favorite_recipes': all_recipes,
             'purchase_recipes': purchase_recipes,
-            }
-        )
+        }
+    )
 
 
 @login_required
@@ -250,8 +256,8 @@ def shop_list(request):
         request,
         'shopList.html', {
             'recipe_list': recipe_list,
-            }
-        )
+        }
+    )
 
 
 @login_required
