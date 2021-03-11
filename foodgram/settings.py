@@ -27,7 +27,7 @@ DEBUG = False
 
 ALLOWED_HOSTS = [
     '127.0.0.1',
-    '84.201.153.35',
+    '130.193.54.104',
     'localhost',
     'www.tunturuntun',
     'tunturuntun'
