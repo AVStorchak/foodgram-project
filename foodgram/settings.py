@@ -29,8 +29,7 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     '130.193.54.104',
     'localhost',
-    'www.tunturuntun',
-    'tunturuntun'
+    'tunturuntun.ga',
 ]
 
 
