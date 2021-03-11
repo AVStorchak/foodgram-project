@@ -25,7 +25,13 @@ SECRET_KEY = '07it!h&^xrz+_u&+s$l8(4%ec_nt94c7d#pmyrn^kg=88p59qm'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', '84.201.162.124', 'localhost']
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    '84.201.153.35',
+    'localhost',
+    'www.tunturuntun',
+    'tunturuntun'
+]
 
 
 # Application definition
