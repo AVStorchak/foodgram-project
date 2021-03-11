@@ -30,6 +30,7 @@ ALLOWED_HOSTS = [
     '130.193.54.104',
     'localhost',
     'tunturuntun.ga',
+    'www.tunturuntun.ga'
 ]
 
 
