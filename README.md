@@ -3,6 +3,9 @@ foodgram-project
 
 Web-site for sharing recipes, providing the capabilites of creating subscriptions to other users, selecting favorite recipes, creating lists of purchases for selected recipes, as well as downloading such lists.
 
+[![Actions Status](https://github.com/AVStorchak/yamdb_final/workflows/Yamdb%20workflow/badge.svg)]
+
+url: http://tunturuntun.ga:8080
 
 ## Getting Started
 
