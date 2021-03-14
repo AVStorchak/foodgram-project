@@ -15,6 +15,7 @@ class SignUp(CreateView):
 
 class LoginAfterPasswordChangeView(PasswordChangeView):
     template_name = 'changePassword.html'
+
     @property
     def success_url(self):
         return reverse_lazy('index')
