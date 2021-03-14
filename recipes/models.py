@@ -67,9 +67,9 @@ class Recipe(models.Model):
 
     class Meta:
         ordering = ['-pub_date']
-        constraints = [
-            models.UniqueConstraint(fields=['title', 'author'], name='name of constraint')
-        ]
+        # constraints = [
+        #     models.UniqueConstraint(fields=['title', 'author'], name='name of constraint')
+        # ]
 
 
 class RecipeIngredient(models.Model):
