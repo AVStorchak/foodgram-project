@@ -1,9 +1,9 @@
 {% load static %}
 {% load tag_filter %}
 <div class="card" data-id="{{ recipe.id }}">
-    <a href="{% url 'recipe' recipe.author.username recipe.id %}" class="link" target="_blank"><img src="{{ recipe.image.url }}" alt="Какой-то текст" class="card__image"></a>
+    <a href="{% url 'recipe' recipe.author.username recipe.id %}" class="link"><img src="{{ recipe.image.url }}" alt="Какой-то текст" class="card__image"></a>
     <div class="card__body">
-        <a class="card__title link" href="{% url 'recipe' recipe.author.username recipe.id %}" target="_blank">{{ recipe.title }}</a>
+        <a class="card__title link" href="{% url 'recipe' recipe.author.username recipe.id %}">{{ recipe.title }}</a>
         <ul class="card__items">
             {% get_recipe_tags recipe.tags.all as tags %}
             {% for tag, params in tags.items %}
@@ -20,7 +20,9 @@
     <div class="card__footer">
         {% if user.is_authenticated %}
             {% include 'includes/buttons/purchase_button.html' with type='generic' %}
-            {% include 'includes/buttons/favorite_button.html' with type='generic' %}
+            <div class="card__favorite">
+                {% include 'includes/buttons/favorite_button.html' with type='generic' %}
+            </div>
         {% endif %}
     </div>
 </div>

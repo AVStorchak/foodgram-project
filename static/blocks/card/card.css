@@ -5,5 +5,5 @@
     border: 1px solid #EEEEEE;
     box-sizing: border-box;
     border-radius: 8px;
-    overflow: hidden;
+    overflow: visible;
 }

@@ -63,10 +63,13 @@ class Recipe(models.Model):
     image = models.ImageField(upload_to='recipes/', blank=True, null=True)
 
     def __str__(self):
-        return self.text
+        return self.title
 
     class Meta:
         ordering = ['-pub_date']
+        constraints = [
+            models.UniqueConstraint(fields=['title', 'author'], name='name of constraint')
+        ]
 
 
 class RecipeIngredient(models.Model):

@@ -1,8 +1,8 @@
-.single-card__favorite-tooltip {
+.card__favorite-tooltip {
     visibility: hidden;
     text-align: center;
     position: absolute;
-    z-index: 1;
+    z-index: 99999;
     top: 50px;
     left: 0;
     margin-left: -80px;
@@ -19,7 +19,7 @@
     display: inline-block;
     width: 190px;
 }
-.single-card__favorite-tooltip::after {
+.card__favorite-tooltip::after {
     content: "";
     position: absolute;
     bottom: 100%;
@@ -29,7 +29,6 @@
     border-style: solid;
     border-color: transparent transparent #555E75 transparent;
 }
-.single-card__favorite:hover .single-card__favorite-tooltip {
-    z-index: 2;
+.card__favorite:hover .card__favorite-tooltip {
     visibility: visible;
 }

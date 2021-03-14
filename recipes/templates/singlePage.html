@@ -22,7 +22,7 @@
                 {% get_recipe_tags recipe.tags.all as tags %}
                 {% for tag, params in tags.items %}
                     {% if params.status == 'on' %}
-                    <li class="card__item"><span class="badge {{ params.badge }}">{{ params.name }}</span></li>
+                    <li class="single-card__item"><span class="badge {{ params.badge }}">{{ params.name }}</span></li>
                     {% endif %}
                 {% endfor %}
             </ul>

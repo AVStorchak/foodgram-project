@@ -49,6 +49,8 @@
 @import "../blocks/card/__title/card__title.css";
 @import "../blocks/card/__items/card__items.css";
 @import "../blocks/card/__items/_column/card__items_column.css";
+@import "../blocks/card/__favorite/card__favorite.css";
+@import "../blocks/card/__favorite-tooltip/card__favorite-tooltip.css";
 @import "../blocks/card/__body/card__body.css";
 @import "../blocks/card/__text/card__text.css";
 @import "../blocks/card/__footer/card__foter.css";
