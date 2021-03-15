@@ -44,7 +44,7 @@ class BasicIngredient(models.Model):
     class Meta:
         ordering = ['name']
         constraints = [
-            models.UniqueConstraint(fields=['name', 'unit'], name='constraint')
+            models.UniqueConstraint(fields=['name', 'unit'], name='ingredient')
         ]
 
 
@@ -71,7 +71,7 @@ class Recipe(models.Model):
     class Meta:
         ordering = ['-pub_date']
         constraints = [
-            models.UniqueConstraint(fields=['title', 'author'], name='constraint')
+            models.UniqueConstraint(fields=['title', 'author'], name='recipe')
         ]
 
 
