@@ -35,7 +35,7 @@ class Tag(models.Model):
 
 
 class BasicIngredient(models.Model):
-    name = models.CharField(max_length=300)
+    name = models.CharField(max_length=300, unique=True)
     unit = models.CharField(max_length=20)
 
     def __str__(self):
@@ -60,7 +60,7 @@ class Recipe(models.Model):
     )
     author = models.ForeignKey(User, on_delete=models.CASCADE,
                                related_name='recipes')
-    image = models.ImageField(upload_to='recipes/', blank=True, null=True)
+    image = models.ImageField(upload_to='recipes/')
 
     def __str__(self):
         return self.title
