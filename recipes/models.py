@@ -35,7 +35,7 @@ class Tag(models.Model):
 
 
 class BasicIngredient(models.Model):
-    name = models.CharField(max_length=300, unique=True)
+    name = models.CharField(max_length=300)
     unit = models.CharField(max_length=20)
 
     def __str__(self):
@@ -43,6 +43,9 @@ class BasicIngredient(models.Model):
 
     class Meta:
         ordering = ['name']
+        constraints = [
+            models.UniqueConstraint(fields=['name', 'unit'], name='constraint')
+        ]
 
 
 class Recipe(models.Model):
@@ -68,7 +71,7 @@ class Recipe(models.Model):
     class Meta:
         ordering = ['-pub_date']
         constraints = [
-            models.UniqueConstraint(fields=['title', 'author'], name='name of constraint')
+            models.UniqueConstraint(fields=['title', 'author'], name='constraint')
         ]
 
 
