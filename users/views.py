@@ -1,3 +1,4 @@
+from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import PasswordChangeView
 from django.shortcuts import render
@@ -18,7 +19,13 @@ class LoginAfterPasswordChangeView(PasswordChangeView):
 
     @property
     def success_url(self):
-        return reverse_lazy('index')
+        return reverse_lazy('login')
+    
+    def form_valid(self, form):
+        form.save()
+        self.request.session.flush()
+        logout(self.request)
+        return super().form_valid(form)
 
 
 def success_redirect(request):

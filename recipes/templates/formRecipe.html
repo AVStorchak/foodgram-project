@@ -32,7 +32,9 @@
                         </div>
                         {% endfor %}
                     </div>
-                    <span class="form__error"></span>
+                    {% if tag_error %}
+                        <span class="form__error">{{ tag_error }}</span>
+                    {% endif %}
                 </div>
             </div>
             <div class="form__group">

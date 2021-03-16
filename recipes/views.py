@@ -82,26 +82,33 @@ def index(request):
 @login_required
 def new_recipe(request):
     db_error = None
+    tag_error = None
     form = RecipeForm(request.POST or None, files=request.FILES or None)
     if form.is_valid():
         try:
             tags = get_recipe_tags(request)
             if not tags:
-                return render(request, "errors/no_tag_error.html")
+                tag_error = 'Вы не можете создать рецепт без тегов'
+                return render(
+                    request,
+                    'formRecipe.html',
+                    {'form': form, 'db_error': db_error, 'tag_error': tag_error}
+                )
             recipe = form.save(commit=False)
             recipe.author = request.user
             recipe.save()
             for tag in tags:
                 recipe.tags.add(tag)
             handle_ingredients(request, recipe)
-            return redirect('index')
+            recipe_url = reverse('recipe', args=(recipe.author, recipe.id))
+            return redirect(recipe_url)
         except IntegrityError:
             db_error = 'Вы не можете создавать рецепты с одинаковыми названиями'
 
     return render(
         request,
         'formRecipe.html',
-        {'form': form, 'db_error': db_error}
+        {'form': form, 'db_error': db_error, 'tag_error': tag_error}
     )
 
 
