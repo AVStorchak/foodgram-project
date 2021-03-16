@@ -83,6 +83,7 @@ def index(request):
 def new_recipe(request):
     db_error = None
     tag_error = None
+    ingredient_error = None
     form = RecipeForm(request.POST or None, files=request.FILES or None)
     if form.is_valid():
         try:
@@ -91,15 +92,30 @@ def new_recipe(request):
                 tag_error = 'Вы не можете создать рецепт без тегов'
                 return render(
                     request,
-                    'formRecipe.html',
-                    {'form': form, 'db_error': db_error, 'tag_error': tag_error}
+                    'formRecipe.html', {
+                        'form': form,
+                        'db_error': db_error,
+                        'tag_error': tag_error,
+                        'ingredient_error': ingredient_error
+                    }
                 )
             recipe = form.save(commit=False)
             recipe.author = request.user
-            recipe.save()
+            handle_ingredients(request, recipe)
+            if len(RecipeIngredient.objects.filter(recipe=recipe)) == 0:
+                ingredient_error = 'Вы не можете создать рецепт без ингредиентов'
+                return render(
+                    request,
+                    'formRecipe.html', {
+                        'form': form,
+                        'db_error': db_error,
+                        'tag_error': tag_error,
+                        'ingredient_error': ingredient_error
+                    }
+                )
             for tag in tags:
                 recipe.tags.add(tag)
-            handle_ingredients(request, recipe)
+            recipe.save()
             recipe_url = reverse('recipe', args=(recipe.author, recipe.id))
             return redirect(recipe_url)
         except IntegrityError:
@@ -107,13 +123,20 @@ def new_recipe(request):
 
     return render(
         request,
-        'formRecipe.html',
-        {'form': form, 'db_error': db_error, 'tag_error': tag_error}
+        'formRecipe.html', {
+            'form': form,
+            'db_error': db_error,
+            'tag_error': tag_error,
+            'ingredient_error': ingredient_error
+        }
     )
 
 
 @login_required
 def recipe_edit(request, username, recipe_id):
+    db_error = None
+    tag_error = None
+    ingredient_error = None
     recipe = get_object_or_404(
         Recipe, id=recipe_id, author__username=username
     )
@@ -128,14 +151,46 @@ def recipe_edit(request, username, recipe_id):
         request.POST or None, files=request.FILES or None, instance=recipe
     )
     if form.is_valid():
-        form.save()
-        recipe.tags.clear()
-        tags = get_recipe_tags(request)
-        for tag in tags:
-            recipe.tags.add(tag)
-        handle_ingredients(request, recipe)
-        recipe_url = reverse('recipe', args=(recipe.author, recipe.id))
-        return redirect(recipe_url)
+        try:
+            tags = get_recipe_tags(request)
+            if not tags:
+                tag_error = 'Вы не можете создать рецепт без тегов'
+                return render(
+                    request,
+                    'formRecipe.html', {
+                        'form': form,
+                        'recipe': recipe,
+                        'ingredients': ingredients,
+                        'tags': tags,
+                        'db_error': db_error,
+                        'tag_error': tag_error,
+                        'ingredient_error': ingredient_error
+                    }
+                )
+            handle_ingredients(request, recipe)
+            if len(RecipeIngredient.objects.filter(recipe=recipe)) == 0:
+                ingredient_error = 'Вы не можете создать рецепт без ингредиентов'
+                return render(
+                    request,
+                    'formRecipe.html', {
+                        'form': form,
+                        'recipe': recipe,
+                        'ingredients': ingredients,
+                        'tags': tags,
+                        'db_error': db_error,
+                        'tag_error': tag_error,
+                        'ingredient_error': ingredient_error
+                    }
+                )
+            form.save()
+            recipe.tags.clear()
+            for tag in tags:
+                recipe.tags.add(tag)
+            recipe_url = reverse('recipe', args=(recipe.author, recipe.id))
+            return redirect(recipe_url)
+
+        except IntegrityError:
+            db_error = 'Вы не можете создавать рецепты с одинаковыми названиями'
 
     return render(
         request,
@@ -143,7 +198,10 @@ def recipe_edit(request, username, recipe_id):
             'form': form,
             'recipe': recipe,
             'ingredients': ingredients,
-            'tags': tags
+            'tags': tags,
+            'db_error': db_error,
+            'tag_error': tag_error,
+            'ingredient_error': ingredient_error
         }
     )
 

@@ -11,7 +11,14 @@
                 <label for="id_name" class="form__label">Название рецепта</label>
                 <div class="form__field-group">
                     <input type="text" id="id_name" name="title" class="form__input" value="{{ recipe.title }}">
-                    <span class="form__error"></span>
+                    {% if form.errors %}
+                        {% for error in form.title.errors %}
+                            <span class="form__error">{{ error }}</span>
+                        {% endfor %}
+                    {% endif %}
+                    {% if db_error %}
+                        <span class="form__error">{{ db_error }}</span>
+                    {% endif %}
                 </div>
             </div>
             <div class="form__group">
@@ -25,7 +32,9 @@
                         </div>
                         {% endfor %}
                     </div>
-                    <span class="form__error"></span>
+                    {% if tag_error %}
+                        <span class="form__error">{{ tag_error }}</span>
+                    {% endif %}
                 </div>
             </div>
             <div class="form__group">
@@ -52,7 +61,9 @@
                         {% endfor %}
                     </div>
                     <span class="form__ingredient-link" id="addIng">Добавить ингредиент</span>
-                    <span class="form__error"></span>
+                    {% if ingredient_error %}
+                        <span class="form__error">{{ ingredient_error }}</span>
+                    {% endif %}
                 </div>
             </div>
             <div class="form__group">
@@ -60,14 +71,22 @@
                 <div class="form__field-group form__field-group_time">
                     <input type="text" id="id_time" name="cooking_time" class="form__input" value="{{ recipe.cooking_time }}">
                     <label for="id_time" class="form__label">минут</label>
-                    <span class="form__error"></span>
+                    {% if form.errors %}
+                        {% for error in form.cooking_time.errors %}
+                            <span class="form__error">{{ error }}</span>
+                        {% endfor %}
+                    {% endif %}
                 </div>
             </div>
             <div class="form__group">
                 <label for="id_description" class="form__label">Описание</label>
                 <div class="form__field-group">
                     <textarea name="text" id="id_description" rows="8" class="form__textarea">{{ recipe.text }}</textarea>
-                    <span class="form__error"></span>
+                    {% if form.errors %}
+                        {% for error in form.text.errors %}
+                            <span class="form__error">{{ error }}</span>
+                        {% endfor %}
+                    {% endif %}
                 </div>
             </div>
             <div class="form__group">
@@ -76,7 +95,11 @@
                     <label for="id_file" class="form__file-button">Выбрать файл</label>
                     <input type="file" class="form__file" name="image" id="id_file">
                     <span id="file_name" class="form__label"></span>
-                    <span class="form__error"></span>
+                    {% if form.errors %}
+                        {% for error in form.image.errors %}
+                            <span class="form__error">{{ error }}</span>
+                        {% endfor %}
+                    {% endif %}
                 </div>
             </div>
             <div class="form__footer">
