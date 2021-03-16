@@ -20,7 +20,7 @@ class LoginAfterPasswordChangeView(PasswordChangeView):
     @property
     def success_url(self):
         return reverse_lazy('login')
-    
+
     def form_valid(self, form):
         form.save()
         self.request.session.flush()
