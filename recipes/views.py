@@ -101,8 +101,10 @@ def new_recipe(request):
                 )
             recipe = form.save(commit=False)
             recipe.author = request.user
+            recipe.save()
             handle_ingredients(request, recipe)
             if len(RecipeIngredient.objects.filter(recipe=recipe)) == 0:
+                recipe.delete()
                 ingredient_error = 'Вы не можете создать рецепт без ингредиентов'
                 return render(
                     request,
@@ -115,7 +117,6 @@ def new_recipe(request):
                 )
             for tag in tags:
                 recipe.tags.add(tag)
-            recipe.save()
             recipe_url = reverse('recipe', args=(recipe.author, recipe.id))
             return redirect(recipe_url)
         except IntegrityError:
